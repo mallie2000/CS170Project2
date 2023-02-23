@@ -13,6 +13,11 @@ def create_new_node_with_different_feature_set(original_feature_set:list, new_fe
     possible_node = Node(modified_list_of_features)
     return possible_node
 
+def return_best_possible_feature_set_and_accuracy(list_of_potential_node):
+    list_of_potential_node.sort(key = lambda x: x.score)
+    best_possible_node = list_of_potential_node.pop()
+    return best_possible_node
+
 class Node:
     def __init__(self,feature_set = None):
         self.feature_set = []
@@ -60,6 +65,11 @@ class SearchAlgo:
             feature_list = self.remove_values_from_list(feature_list,best_node_feature_set)
         print(f"\nFinished Search!! The best feature subset is {self.feature_set_with_highest_accuracy}, which has an accuracy of {self.highest_accuracy}%") 
     
+    def update_highest_accuracy_and_best_feature_set(self, best_node:Node):
+        if(best_node.score > self.highest_accuracy):
+            self.highest_accuracy = best_node.score
+            self.feature_set_with_highest_accuracy  = best_node.feature_set
+
     def backwards_elimination(self,number_of_features):
         starting_list_of_features = [x for x in range(1,number_of_features+1)]
         starting_node = Node(starting_list_of_features)
@@ -75,16 +85,13 @@ class SearchAlgo:
                 possible_node = create_new_node_with_different_feature_set(starting_list_of_features,feature_num)
                 print(f"Using feature(s) {possible_node.feature_set} accuracy is {possible_node.score}%")
                 list_of_possible_nodes.append(possible_node)
-            list_of_possible_nodes.sort(key = lambda x: x.score)
-            best_possible_node = list_of_possible_nodes.pop()
-
-            if(best_possible_node.score > self.highest_accuracy):
-                self.highest_accuracy = best_possible_node.score
-                self.feature_set_with_highest_accuracy  = best_possible_node.feature_set
+            best_possible_node = return_best_possible_feature_set_and_accuracy(list_of_possible_nodes)
+            self.update_highest_accuracy_and_best_feature_set(best_possible_node)
             print(f"Feature set {best_possible_node.feature_set} was best, accuracy is {best_possible_node.score}%\n")
             starting_list_of_features = best_possible_node.feature_set
         print(f"\nFinished Search!! The best feature subset is {self.feature_set_with_highest_accuracy}, which has an accuracy of {self.highest_accuracy}%")
         
+
 
 
 

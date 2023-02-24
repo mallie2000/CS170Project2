@@ -21,6 +21,15 @@ def return_best_possible_feature_set_and_accuracy(list_of_potential_node):
     best_possible_node = list_of_potential_node.pop()
     return best_possible_node
 
+def initialize_starting_states(startingList,algorithmFlag):
+    if(algorithmFlag):
+        starting_node = Node() #different
+        current_feature_set = [] #different
+    else:
+        starting_node = Node(startingList) #different
+        current_feature_set = deepcopy(startingList) #different
+    return starting_node,current_feature_set
+
 class Node:
     def __init__(self,feature_set = None):
         self.feature_set = []
@@ -46,12 +55,7 @@ class SearchAlgo:
     
     def feature_selection(self,number_of_features,forward_selection_flag = True):
         starting_list_of_features = [x for x in range(1,number_of_features+1)]
-        if(forward_selection_flag):
-            starting_node = Node() #different
-            current_feature_set = [] #different
-        else:
-            starting_node = Node(starting_list_of_features) #different
-            current_feature_set = deepcopy(starting_list_of_features) #different
+        starting_node, current_feature_set = initialize_starting_states(starting_list_of_features,forward_selection_flag)
         print(f"Using all features and 'random' evaluations, I get an accuracy of {starting_node.score}%\n")
         self.highest_accuracy = starting_node.score
         self.feature_set_with_highest_accuracy = starting_node.feature_set
@@ -60,10 +64,7 @@ class SearchAlgo:
         while(len(starting_list_of_features) != 0):
             list_of_possible_nodes = []
             for feature_num in starting_list_of_features:
-                if(forward_selection_flag):
-                    possible_node = create_new_node_with_different_feature_set(current_feature_set,feature_num,addFlag=True)
-                else:
-                    possible_node = create_new_node_with_different_feature_set(current_feature_set,feature_num,addFlag=False)
+                possible_node = create_new_node_with_different_feature_set(current_feature_set,feature_num,forward_selection_flag)
                 print(f"Using feature(s) {possible_node.feature_set} accuracy is {possible_node.score}%")
                 list_of_possible_nodes.append(possible_node)
             best_possible_node = return_best_possible_feature_set_and_accuracy(list_of_possible_nodes)
@@ -71,9 +72,9 @@ class SearchAlgo:
             self.update_highest_accuracy_and_best_feature_set(best_possible_node)
             print(f"Feature set {best_possible_node.feature_set} was best, accuracy is {best_possible_node.score}%\n")
             if(forward_selection_flag):
-                starting_list_of_features.remove(best_possible_node.feature_set[-1]) #different
+                starting_list_of_features.remove(best_possible_node.feature_set[-1])
             else:
-                starting_list_of_features = current_feature_set #different
+                starting_list_of_features = current_feature_set
         print(f"\nFinished Search!! The best feature subset is {self.feature_set_with_highest_accuracy}, which has an accuracy of {self.highest_accuracy}%")
     
 

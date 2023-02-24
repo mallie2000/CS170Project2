@@ -7,9 +7,12 @@ def remove_values_from_list(original_list,values_to_remove):
             original_list.remove(value)
     return original_list
 
-def create_new_node_with_different_feature_set(original_feature_set:list, new_feature_number:int):
+def create_new_node_with_different_feature_set(original_feature_set:list, new_feature_number:int,addFlag = False):
     modified_list_of_features = deepcopy(original_feature_set)
-    modified_list_of_features.remove(new_feature_number)
+    if(addFlag):
+        modified_list_of_features.append(new_feature_number)
+    else:
+        modified_list_of_features.remove(new_feature_number)
     possible_node = Node(modified_list_of_features)
     return possible_node
 
@@ -40,54 +43,40 @@ class SearchAlgo:
             self.highest_accuracy = best_node.score
             self.feature_set_with_highest_accuracy  = best_node.feature_set
 
-    def exploreBestFeatures(self,list_of_features,initialFeatures = None):
-        nodes_to_explore = []
-        for feature_num in list_of_features:
-            if(initialFeatures == None):
-                new_node = Node([feature_num])
-            else:
-                new_node = Node([feature_num]+initialFeatures)
-            print(f"Using feature(s) {new_node.feature_set} accuracy is {new_node.score}%")
-            nodes_to_explore.append(new_node)
-        best_node = return_best_possible_feature_set_and_accuracy(nodes_to_explore)
-        print(f"Feature set {best_node.feature_set} was best, accuracy is {best_node.score}%")
-        self.update_highest_accuracy_and_best_feature_set(best_node)
-        return best_node
     
-    def forwardSelection(self,number_of_features):
-        startingNode = Node()
-        print(f"Using no features and 'random' evaluations, I get an accuracy of {startingNode.score}%\n")
-        self.highest_accuracy = startingNode.score
-        print("Beginning search\n")
-
-        feature_list  = [x for x in range(1,number_of_features+1)]
-        best_node_feature_set = None
-        while(len(feature_list) != 0):
-            best_node_feature_set = self.exploreBestFeatures(feature_list,best_node_feature_set).feature_set
-            feature_list = remove_values_from_list(feature_list,best_node_feature_set)
-        print(f"\nFinished Search!! The best feature subset is {self.feature_set_with_highest_accuracy}, which has an accuracy of {self.highest_accuracy}%") 
-    
-
-    def backwards_elimination(self,number_of_features):
+    def feature_selection(self,number_of_features,forward_selection_flag = True):
         starting_list_of_features = [x for x in range(1,number_of_features+1)]
-        starting_node = Node(starting_list_of_features)
+        if(forward_selection_flag):
+            starting_node = Node() #different
+            current_feature_set = [] #different
+        else:
+            starting_node = Node(starting_list_of_features) #different
+            current_feature_set = deepcopy(starting_list_of_features) #different
         print(f"Using all features and 'random' evaluations, I get an accuracy of {starting_node.score}%\n")
         self.highest_accuracy = starting_node.score
-        self.feature_set_with_highest_accuracy = starting_list_of_features
+        self.feature_set_with_highest_accuracy = starting_node.feature_set
         print("Beginning search\n")
-
 
         while(len(starting_list_of_features) != 0):
             list_of_possible_nodes = []
             for feature_num in starting_list_of_features:
-                possible_node = create_new_node_with_different_feature_set(starting_list_of_features,feature_num)
+                if(forward_selection_flag):
+                    possible_node = create_new_node_with_different_feature_set(current_feature_set,feature_num,addFlag=True)
+                else:
+                    possible_node = create_new_node_with_different_feature_set(current_feature_set,feature_num,addFlag=False)
                 print(f"Using feature(s) {possible_node.feature_set} accuracy is {possible_node.score}%")
                 list_of_possible_nodes.append(possible_node)
             best_possible_node = return_best_possible_feature_set_and_accuracy(list_of_possible_nodes)
+            current_feature_set = best_possible_node.feature_set
             self.update_highest_accuracy_and_best_feature_set(best_possible_node)
             print(f"Feature set {best_possible_node.feature_set} was best, accuracy is {best_possible_node.score}%\n")
-            starting_list_of_features = best_possible_node.feature_set
+            if(forward_selection_flag):
+                starting_list_of_features.remove(best_possible_node.feature_set[-1]) #different
+            else:
+                starting_list_of_features = current_feature_set #different
         print(f"\nFinished Search!! The best feature subset is {self.feature_set_with_highest_accuracy}, which has an accuracy of {self.highest_accuracy}%")
+    
+
         
 
 

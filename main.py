@@ -20,9 +20,10 @@ def main():
     number_of_features = retrieve_num_of_features()
     search_algo = retrieve_search_algo_choice()
     if(search_algo == 1):
-        s.forwardSelection(number_of_features)
+        s.feature_selection(number_of_features)
     if(search_algo == 2):
-        s.backwards_elimination(number_of_features)
+        # s.backwards_elimination(number_of_features)
+        s.feature_selection(number_of_features,False)
 
 if __name__ == "__main__":
     main()

@@ -32,7 +32,7 @@ def main():
     #     df = l.small_dataset_as_df()
     df = l.custom_large_dataset_as_df()
     dfN = l.normalize_dataset(df)
-    # s.feature_selection(len(dfN.columns)-1,dfN)
+    s.feature_selection(len(dfN.columns)-1,dfN, False)
 
     # number_of_features = retrieve_num_of_features()
     # search_algo = retrieve_search_algo_choice()

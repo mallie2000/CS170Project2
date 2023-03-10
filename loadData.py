@@ -15,7 +15,7 @@ def custom_small_dataset_as_df():
     return df
 
 def custom_large_dataset_as_df():
-    col_names = [i for i in range(1,11)]
+    col_names = [i for i in range(1,41)]
     col_names.insert(0,"Feature")
     
     df = pd.read_csv("CS170_Spring_2022_Large_data__02.txt",delim_whitespace=True,header = None, names=col_names)

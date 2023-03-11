@@ -29,8 +29,11 @@ def large_dataset_as_df():
 
 def normalize_dataset(df):
     normalized_df = df.copy()
+
+    # print(normalized_df[2].min())
+    # print(normalized_df[2].max())
     for col in df.columns[1::]:
-        normalized_df[col] = (normalized_df[col] - normalized_df[col].mean())/normalized_df[col].std()
+        normalized_df[col] = (normalized_df[col] - normalized_df[col].min())/(normalized_df[col].max()-normalized_df[col].min())
     return normalized_df
 
 

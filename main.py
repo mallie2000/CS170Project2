@@ -25,22 +25,30 @@ def full_algo():
     selection = int(input("Enter selection here: "))
     return selection
 
+def determine_dataset(selection):
+    if(selection == 1):
+        df = l.small_dataset_as_df()
+    if(selection == 2):
+        df = l.large_dataset_as_df()
+    if(selection == 3):
+        df = l.custom_small_dataset_as_df()
+    if(selection == 4):
+        df = l.custom_large_dataset_as_df()
+    return df
+
 def main():
     s = SearchAlgo()
-    # selection = full_algo()
-    # if(selection == 1):
-    #     df = l.small_dataset_as_df()
-    df = l.custom_large_dataset_as_df()
-    dfN = l.normalize_dataset(df)
-    s.feature_selection(len(dfN.columns)-1,dfN, False)
+    search_algo_choice = retrieve_search_algo_choice()
+    selection = full_algo()
+    normalized = int(input("\nEnter 0 for original data\nEnter 1 for normalized data: "))
+    df = None
+    df = determine_dataset(selection)
+    if(normalized):
+        df = l.normalize_dataset(df)
 
-    # number_of_features = retrieve_num_of_features()
-    # search_algo = retrieve_search_algo_choice()
-    # if(search_algo == 1):
-    #     s.feature_selection(number_of_features)
-    # if(search_algo == 2):
-    #     # s.backwards_elimination(number_of_features)
-    #     s.feature_selection(number_of_features,False)
-
+    if(search_algo_choice == 1):
+        s.feature_selection(len(df.columns)-1,df)
+    else:
+        s.feature_selection(len(df.columns)-1,df,False)
 if __name__ == "__main__":
     main()

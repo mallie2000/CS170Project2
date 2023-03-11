@@ -58,7 +58,7 @@ class SearchAlgo:
     def feature_selection(self,number_of_features,df,forward_selection_flag = True):
         starting_list_of_features = [x for x in range(1,number_of_features+1)]
         starting_node, current_feature_set = initialize_starting_states(starting_list_of_features,forward_selection_flag,df)
-        print(f"Using all features and 'random' evaluations, I get an accuracy of {starting_node.score}%\n")
+        print(f"Using feature set {current_feature_set}, I get an accuracy of {starting_node.score}%\n")
         self.highest_accuracy = starting_node.score
         self.feature_set_with_highest_accuracy = starting_node.feature_set
         print("Beginning search\n")
